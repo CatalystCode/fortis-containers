@@ -147,8 +147,9 @@ CREATE TABLE topplaces (
     periodenddate timestamp,
     periodtype text,
     period text,
+    pipeline text,
     mentions int,
-    PRIMARY KEY ((placeid), periodstartdate, periodenddate)
+    PRIMARY KEY ((placeid), pipeline, periodstartdate, periodenddate)
 ) WITH CLUSTERING ORDER BY (mentions DESC);
 
 CREATE TABLE topsources (
