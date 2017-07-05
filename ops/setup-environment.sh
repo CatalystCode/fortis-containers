@@ -19,7 +19,7 @@ readonly checkpoint_directory="HDFS://"
 readonly eh_path="published-messages"
 readonly eh_consumer_group="\$Default"
 readonly fortis_models_directory="https://fortiscentral.blob.core.windows.net/sentiment/"
-readonly fortis_central_directory="https://fortiscentral.blob.core.windows.net/"
+readonly fortis_central_directory="https://fortiscentral.blob.core.windows.net"
 
 kubectl create configmap "${spark_config_map_name}" --namespace spark --from-literal=FORTIS_CASSANDRA_HOST="${cassandra_host}" --from-literal=FORTIS_FEATURE_SERVICE_HOST="${feature_service_host}" --from-literal=DEFAULT_SITE_NAME="${site_name}" --from-literal=FORTIS_APPINSIGHTS_IKEY="${app_insights_id}" --from-literal=SPARK_DAEMON_MEMORY="${SPARK_DAEMON_MEMORY}" --from-literal=HA_PROGRESS_DIR="${checkpoint_directory}" --from-literal=DEFAULT_LANGUAGE="${default_language}" --from-literal=FORTIS_SERVICE_HOST="${graphql_service_host}" --from-literal=FORTIS_MODELS_DIRECTORY="${fortis_models_directory}" --from-literal=PUBLISH_EVENTS_EVENTHUB_CONNECTION_STRING="${eh_conn_str}" --from-literal=PUBLISH_EVENTS_EVENTHUB_PATH="${eh_path}" --from-literal=PUBLISH_EVENTS_EVENTHUB_PARTITION="${eh_consumer_group}"
 
