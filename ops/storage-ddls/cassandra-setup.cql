@@ -140,6 +140,28 @@ CREATE INDEX ON computedtopics (period);
 CREATE INDEX ON computedtopics (computedfeatures);
 CREATE INDEX ON computedtopics (periodtype);
 
+CREATE TABLE topplaces (
+    placeid text,
+    placename text,
+    periodstartdate timestamp,
+    periodenddate timestamp,
+    periodtype text,
+    period text,
+    pipeline text,
+    mentions int,
+    PRIMARY KEY ((placeid), pipeline, periodstartdate, periodenddate)
+) WITH CLUSTERING ORDER BY (mentions DESC);
+
+CREATE TABLE topsources (
+    pipeline text,
+    periodstartdate timestamp,
+    periodenddate timestamp,
+    periodtype text,
+    period text,
+    mentions int,
+    PRIMARY KEY ((pipeline), periodstartdate, periodenddate)
+) WITH CLUSTERING ORDER BY (mentions DESC);
+
 CREATE TABLE events(
     id uuid,
     externalid text,
