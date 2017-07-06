@@ -37,10 +37,9 @@ CREATE INDEX ON sitesettings (sitename);
 
 CREATE TABLE streams (
   pipeline text,
-  streamid uuid,
   connector text,
   params frozen<map<text, text>>,
-  PRIMARY KEY ((pipeline), streamid)
+  PRIMARY KEY ((pipeline), connector, params)
 );
 
 CREATE TABLE trustedsources (
