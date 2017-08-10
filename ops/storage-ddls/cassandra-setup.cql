@@ -192,26 +192,26 @@ CREATE TABLE popularplaces (
 );
 
 CREATE TABLE eventtopics(
-    eventids set<text>,
+    eventid text,
     topic text,
-    insertiontime timestamp,
+    eventtime timestamp,
     pipelinekey text,
     externalsourceid text,
-    PRIMARY KEY ((topic), pipelinekey, externalsourceid)
+    PRIMARY KEY ((topic), pipelinekey, externalsourceid, eventtime, eventid)
 );
 
 CREATE TABLE eventplaces(
-    eventids set<text>,
+    eventid text,
     conjunctiontopic1 text,
     conjunctiontopic2 text,
     conjunctiontopic3 text,
     centroidlat double,
     centroidlon double,
     placeid text,
-    insertiontime timestamp,
+    eventtime timestamp,
     pipelinekey text,
     externalsourceid text,
-    PRIMARY KEY ((placeid), conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, pipelinekey, externalsourceid, centroidlat, centroidlon)
+    PRIMARY KEY ((conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, pipelinekey, externalsourceid), centroidlat, centroidlon, eventtime, placeid)
 );
 
 CREATE TABLE events(
