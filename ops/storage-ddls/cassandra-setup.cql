@@ -57,6 +57,8 @@ CREATE TYPE computedentities (
 
 CREATE TYPE place (
     placeid text,
+    name text,
+    bbox list<double>,
     centroidlat double, 
     centroidlon double
 );
@@ -92,6 +94,7 @@ CREATE TABLE blacklist(
 CREATE TABLE sitesettings(
     sitename text,
     geofence list<double>,
+    places list<place>,
     languages set<text>,
     defaultzoom int,
     title text,
