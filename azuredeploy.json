@@ -145,6 +145,14 @@
         "eventHubMessagingUnits": "1",
         "eventHubSku": "2",
         "eventhubResource": "[resourceId('Microsoft.Eventhub/namespaces/authorizationRules', variables('eventHubNamespace'), 'fortisAuthRule')]",
+        "cogsvcVisionSku": "S1",
+        "cogsvcTextSku": "S1",
+        "cogsvcSpeechSku": "S1",
+        "cogsvcTranslationSku": "S1",
+        "cogsvcVisionAccountName": "fortisanalyzeimages",
+        "cogsvcTextAccountName": "fortisanalyzetext",
+        "cogsvcSpeechAccountName": "fortisanalyzespeech",
+        "cogsvcTranslationAccountName": "fortistranslations",
         "useServicePrincipal": "[variables('useServicePrincipalDictionary')[variables('orchestratorType')]]",
         "useServicePrincipalDictionary": {
             "DCOS": 0,
@@ -498,9 +506,53 @@
                     "fileUris": [
                         "[concat(variables('postDeploymentGithubRepoPath'),'/', variables('postDeploymentExtensionScript'))]"
                     ],
-                    "commandToExecute": "[concat('./', variables('postDeploymentExtensionScript'), ' -lo \"', resourceGroup().location, '\" -ak \"', parameters('servicePrincipalAppKey'), '\" -si \"', subscription().subscriptionId, '\" -ti \"', subscription().tenantId, '\" -sn \"', parameters('siteName'), '\" -un \"', parameters('adminUsername'), '\" -aii \"', reference(resourceId('Microsoft.Insights/components', variables('applicationInsightServiceName')), '2014-04-01').InstrumentationKey,'\" -rg \"', resourceGroup().name, '\" -mf \"', reference(resourceId('Microsoft.ContainerService/containerServices', variables('kubernetesName'))).masterProfile.fqdn, '\" -san \"', variables('storageAccountName'), '\" -sak \"', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2016-01-01').keys[0].value,'\" -sty \"', parameters('siteType'), '\" -ai \"', parameters('servicePrincipalAppId'), '\" -sw \"', parameters('sparkWorkers'), '\" -cn \"', parameters('cassandraNodes'), '\" -kn \"', variables('kubernetesName'), '\" -pf \"', parameters('dnsNamePrefix'), '\" -ec \"', listKeys(variables('eventhubResource'), variables('ehVersion')).primaryConnectionString, '\" -sb \"', listkeys(variables('sbAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString, '\" -gc \"', variables('githubClonePath'), '\"')]"
+                    "commandToExecute": "[concat('./', variables('postDeploymentExtensionScript'), ' -lo \"', resourceGroup().location, '\" -ak \"', parameters('servicePrincipalAppKey'), '\" -si \"', subscription().subscriptionId, '\" -ti \"', subscription().tenantId, '\" -sn \"', parameters('siteName'), '\" -un \"', parameters('adminUsername'), '\" -aii \"', reference(resourceId('Microsoft.Insights/components', variables('applicationInsightServiceName')), '2014-04-01').InstrumentationKey,'\" -rg \"', resourceGroup().name, '\" -mf \"', reference(resourceId('Microsoft.ContainerService/containerServices', variables('kubernetesName'))).masterProfile.fqdn, '\" -san \"', variables('storageAccountName'), '\" -sak \"', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName')), '2016-01-01').keys[0].value,'\" -sty \"', parameters('siteType'), '\" -ai \"', parameters('servicePrincipalAppId'), '\" -sw \"', parameters('sparkWorkers'), '\" -cn \"', parameters('cassandraNodes'), '\" -kn \"', variables('kubernetesName'), '\" -pf \"', parameters('dnsNamePrefix'), '\" -ec \"', listKeys(variables('eventhubResource'), variables('ehVersion')).primaryConnectionString, '\" -sb \"', listkeys(variables('sbAuthRuleResourceId'), variables('sbVersion')).primaryConnectionString, '\" -gc \"', variables('githubClonePath'), '\" -trak \"', listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('cogsvcTranslationAccountName')), '2016-02-01-preview').keys[0].value, '\" -ctak \"', listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('cogsvcTextAccountName')), '2016-02-01-preview').keys[0].value, '\" -cvak \"', listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('cogsvcVisionAccountName')), '2016-02-01-preview').keys[0].value, '\" -csak \"', listKeys(resourceId('Microsoft.CognitiveServices/accounts', variables('cogsvcSpeechAccountName')), '2016-02-01-preview').keys[0].value, '\"')]"
                 }
             }
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "sku":{
+                "name": "[variables('cogsvcTextSku')]"
+            },
+            "kind": "TextAnalytics",
+            "name": "[variables('cogsvcTextAccountName')]",
+            "apiVersion": "2016-02-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "sku":{
+                "name": "[variables('cogsvcSpeechSku')]"
+            },
+            "kind": "Speech",
+            "name": "[variables('cogsvcSpeechAccountName')]",
+            "apiVersion": "2016-02-01-preview",
+            "location": "global",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "sku":{
+                "name": "[variables('cogsvcVisionSku')]"
+            },
+            "kind": "ComputerVision",
+            "name": "[variables('cogsvcVisionAccountName')]",
+            "apiVersion": "2016-02-01-preview",
+            "location": "[resourceGroup().location]",
+            "properties": {}
+        },
+        {
+            "type": "Microsoft.CognitiveServices/accounts",
+            "sku":{
+                "name": "[variables('cogsvcTranslationSku')]"
+            },
+            "kind": "TextTranslation",
+            "name": "[variables('cogsvcTranslationAccountName')]",
+            "apiVersion": "2016-02-01-preview",
+            "location": "global",
+            "properties": {}
         }
     ],
     "outputs": {

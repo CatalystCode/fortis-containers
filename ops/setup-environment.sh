@@ -15,6 +15,10 @@ readonly eh_conn_str="${9}"
 readonly feature_service_db_conn_str="${10}"
 readonly fortis_central_directory="${11}"
 readonly sb_conn_str="${12}"
+readonly cogsvc_vision_account_key="${13}"
+readonly cogsvc_text_account_key="${14}"
+readonly cogsvc_speech_account_key="${15}"
+readonly translation_account_key="${16}"
 
 readonly fortis_admin_interface="http://${fortis_interface_host}/#/site/${site_name}/admin"
 readonly default_language="en"
@@ -40,7 +44,10 @@ kubectl create configmap "${spark_config_map_name}" --namespace spark \
 --from-literal=SERVICE_BUS_QUEUE_STREAM="${sb_queue_streams}" \
 --from-literal=PUBLISH_EVENTS_EVENTHUB_CONNECTION_STRING="${eh_conn_str}" \
 --from-literal=PUBLISH_EVENTS_EVENTHUB_PATH="${eh_path}" \
---from-literal=PUBLISH_EVENTS_EVENTHUB_PARTITION="${eh_consumer_group}"
+--from-literal=PUBLISH_EVENTS_EVENTHUB_PARTITION="${eh_consumer_group}" \
+--from-literal=OXFORD_VISION_TOKEN="${cogsvc_vision_account_key}" \
+--from-literal=OXFORD_LANGUAGE_TOKEN="${cogsvc_text_account_key}" \
+--from-literal=OXFORD_SPEECH_TOKEN="${cogsvc_speech_account_key}"
 
 cd deis-apps/feature-service || exit 2
 deis config:set APPINSIGHTS_INSTRUMENTATIONKEY="${app_insights_id}"
@@ -58,6 +65,7 @@ deis config:set PUBLISH_EVENTS_EVENTHUB_PARTITION="${eh_consumer_group}"
 deis config:set SERVICE_BUS_QUEUE_STREAM="${sb_queue_streams}"
 deis config:set SERVICE_BUS_QUEUE_SITE="${sb_queue_site}"
 deis config:set SERVICE_BUS_CONNECTION_STRING="${sb_conn_str}"
+deis config:set TRANSLATION_SERVICE_ACCOUNT_KEY="${translation_account_key}"
 
 cd ../fortis-interface || exit 2
 deis config:set APPINSIGHTS_INSTRUMENTATIONKEY="${app_insights_id}"
