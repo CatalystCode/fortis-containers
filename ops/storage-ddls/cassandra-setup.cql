@@ -298,7 +298,7 @@ AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, t
 PRIMARY KEY ((periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period), pipelinekey, tilex, tiley, periodstartdate, periodenddate);
 
 CREATE MATERIALIZED VIEW timeseries
-AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period, pipelinekey, periodtype, tilez, period, tilex, tiley, periodstartdate, periodenddate, mentioncount, avgsentiment
+AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period, pipelinekey, periodtype, tilez, period, tilex, tiley, periodstartdate, periodenddate, mentioncount, avgsentimentnumerator
    FROM computedtiles
    WHERE periodtype IS NOT NULL
      AND conjunctiontopic1 IS NOT NULL
