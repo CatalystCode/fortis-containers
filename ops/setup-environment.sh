@@ -61,6 +61,7 @@ echo FORTIS_SB_COMMAND_QUEUE="${sb_queue_command}" >> .env
 echo FORTIS_SB_CONN_STR="${sb_conn_str}" >> .env
 echo CASSANDRA_USERNAME="cassandra" >> .env
 echo CASSANDRA_PASSWORD="cassandra" >> .env
+echo CASSANDRA_KEYSPACE="fortis" >> .env
 echo ENABLE_V2=1 >> .env
 deis config:push
 
