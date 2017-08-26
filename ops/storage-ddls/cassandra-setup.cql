@@ -10,7 +10,7 @@ DROP MATERIALIZED VIEW IF EXISTS eventbatches;
 DROP MATERIALIZED VIEW IF EXISTS popularsources;
 DROP MATERIALIZED VIEW IF EXISTS timeseries;
 DROP MATERIALIZED VIEW IF EXISTS eventplacesbysource;
-
+DROP MATERIALIZED VIEW IF EXISTS populartopics;
 DROP INDEX IF EXISTS events_fulltext_idx;
 
 DROP TABLE IF EXISTS watchlist;
@@ -19,7 +19,6 @@ DROP TABLE IF EXISTS sitesettings;
 DROP TABLE IF EXISTS streams;
 DROP TABLE IF EXISTS trustedsources;
 DROP TABLE IF EXISTS conjunctivetopics;
-DROP TABLE IF EXISTS populartopics;
 DROP TABLE IF EXISTS computedtiles;
 DROP TABLE IF EXISTS popularplaces;
 DROP TABLE IF EXISTS eventtopics;
@@ -140,21 +139,29 @@ CREATE TABLE conjunctivetopics (
     PRIMARY KEY ((periodtype, pipelinekey, externalsourceid, tilez, topic, period), conjunctivetopic, tilex, tiley, periodstartdate, periodenddate)
 );
 
-CREATE TABLE populartopics (
-    periodstartdate timestamp,
-    periodenddate timestamp,
-    periodtype text,
-    pipelinekey text,
-    period text,
-    tilez int,
-    tilex int,
-    tiley int,
-    externalsourceid text,
-    topic text,
-    mentioncount counter,
-    avgsentimentnumerator counter,
-    PRIMARY KEY ((periodtype, pipelinekey, externalsourceid, tilez, topic, period), tilex, tiley, periodstartdate, periodenddate)
-);
+CREATE MATERIALIZED VIEW populartopics
+AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period, pipelinekey, periodtype, tilez, 
+          period, tilex, tiley, periodstartdate, periodenddate, mentioncount, avgsentimentnumerator, placeid
+   FROM computedtiles
+   WHERE periodtype IS NOT NULL
+     AND conjunctiontopic1 IS NOT NULL
+     AND conjunctiontopic2 = ''
+     AND conjunctiontopic3 = ''
+     AND avgsentimentnumerator IS NOT NULL
+     AND mentioncount IS NOT NULL
+     AND placeid IS NOT NULL
+     AND externalsourceid IS NOT NULL
+     AND period IS NOT NULL
+     AND pipelinekey IS NOT NULL
+     AND periodtype IS NOT NULL
+     AND tilez IS NOT NULL
+     AND tilex IS NOT NULL
+     AND tiley IS NOT NULL
+     AND periodstartdate IS NOT NULL
+     AND periodenddate IS NOT NULL
+PRIMARY KEY ((periodtype, externalsourceid, tilez, pipelinekey), mentioncount, tilex, tiley, periodstartdate, periodenddate, period, placeid, 
+             conjunctiontopic1, conjunctiontopic2, conjunctiontopic3)
+WITH CLUSTERING ORDER BY (mentioncount DESC);
 
 CREATE TABLE computedtiles (
     periodstartdate timestamp,
@@ -165,6 +172,7 @@ CREATE TABLE computedtiles (
     tilez int,
     tilex int,
     tiley int,
+    placeid text,
     externalsourceid text,
     mentioncount bigint,
     avgsentimentnumerator bigint,
@@ -172,7 +180,7 @@ CREATE TABLE computedtiles (
     conjunctiontopic1 text,
     conjunctiontopic2 text,
     conjunctiontopic3 text,
-    PRIMARY KEY ((periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, period), pipelinekey, externalsourceid, tilex, tiley, periodstartdate, periodenddate)
+    PRIMARY KEY ((periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, period), pipelinekey, externalsourceid, tilex, tiley, periodstartdate, periodenddate, placeid)
 );
 
 CREATE TABLE popularplaces (
@@ -296,7 +304,8 @@ CREATE TABLE computedtrends(
  *************************************/
 
 CREATE MATERIALIZED VIEW popularsources
-AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period, pipelinekey, periodtype, tilez, period, tilex, tiley, periodstartdate, periodenddate, mentioncount, avgsentimentnumerator
+AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period, pipelinekey, periodtype, tilez, 
+          period, tilex, tiley, periodstartdate, periodenddate, mentioncount, avgsentimentnumerator, placeid
    FROM computedtiles
    WHERE periodtype IS NOT NULL
      AND conjunctiontopic1 IS NOT NULL
@@ -304,22 +313,22 @@ AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, t
      AND conjunctiontopic3 IS NOT NULL
      AND avgsentimentnumerator IS NOT NULL
      AND mentioncount IS NOT NULL
-     AND tilez IS NOT NULL
+     AND placeid IS NOT NULL
      AND externalsourceid IS NOT NULL
      AND period IS NOT NULL
      AND pipelinekey IS NOT NULL
      AND periodtype IS NOT NULL
      AND tilez IS NOT NULL
-     AND period IS NOT NULL
      AND tilex IS NOT NULL
      AND tiley IS NOT NULL
      AND periodstartdate IS NOT NULL
      AND periodenddate IS NOT NULL
-PRIMARY KEY ((periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, pipelinekey), mentioncount, tilex, tiley, periodstartdate, periodenddate, externalsourceid, period)
+PRIMARY KEY ((periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, pipelinekey), mentioncount, tilex, tiley, periodstartdate, periodenddate, externalsourceid, period, placeid)
 WITH CLUSTERING ORDER BY (mentioncount DESC);
 
 CREATE MATERIALIZED VIEW timeseries
-AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period, pipelinekey, periodtype, tilez, period, tilex, tiley, periodstartdate, periodenddate, mentioncount, avgsentimentnumerator
+AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, externalsourceid, period, pipelinekey, periodtype, tilez, period, tilex, tiley, 
+          periodstartdate, periodenddate, mentioncount, avgsentimentnumerator, placeid
    FROM computedtiles
    WHERE periodtype IS NOT NULL
      AND conjunctiontopic1 IS NOT NULL
@@ -329,6 +338,7 @@ AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, t
      AND externalsourceid IS NOT NULL
      AND period IS NOT NULL
      AND pipelinekey IS NOT NULL
+     AND placeid IS NOT NULL
      AND periodtype IS NOT NULL
      AND tilez IS NOT NULL
      AND period IS NOT NULL
@@ -336,7 +346,7 @@ AS SELECT periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, t
      AND tiley IS NOT NULL
      AND periodstartdate IS NOT NULL
      AND periodenddate IS NOT NULL
-PRIMARY KEY ((periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, pipelinekey, externalsourceid), tilex, tiley, periodstartdate, periodenddate, period);
+PRIMARY KEY ((periodtype, conjunctiontopic1, conjunctiontopic2, conjunctiontopic3, tilez, pipelinekey, externalsourceid), tilex, tiley, periodstartdate, periodenddate, period, placeid);
 
 /**************************************
  * Indices
