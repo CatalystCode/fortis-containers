@@ -5,9 +5,6 @@
         "siteName": {
             "value": "enter-your-fortis-site-name"
         },
-       // "siteLocation":{
-       //     "value": "East-US-2"
-       // },
         "acsMasterCount": {
             "value": 1
         },
