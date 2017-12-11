@@ -8,6 +8,9 @@
                 "description": "The Site name for your Fortis pipeline."
             }
         },
+        "siteLocation": {
+            "type": "string"
+        },
         "acsMasterCount": {
             "type": "int",
             "metadata": {
@@ -163,7 +166,7 @@
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('storageAccountName')]",
             "apiVersion": "2016-01-01",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "sku": {
                 "name": "[variables('vmStorageAccountType')]"
             },
@@ -174,7 +177,7 @@
             "apiVersion": "2015-06-15",
             "type": "Microsoft.Network/publicIPAddresses",
             "name": "[variables('publicIPAddressName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "properties": {
                 "publicIPAllocationMethod": "[variables('publicIPAddressType')]",
                 "dnsSettings": {
@@ -220,7 +223,7 @@
             "type": "Microsoft.Storage/storageAccounts",
             "name": "[variables('vmStorageAccountName')]",
             "apiVersion": "2016-01-01",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "sku": {
                 "name": "[variables('vmStorageAccountType')]"
             },
@@ -231,7 +234,7 @@
             "apiVersion": "[variables('sbVersion')]",
             "name": "[variables('sbNamespace')]",
             "type": "Microsoft.ServiceBus/namespaces",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "resources": [
                 {
                     "apiVersion": "[variables('sbVersion')]",
@@ -256,7 +259,7 @@
                     "dependsOn": [
                         "[concat('Microsoft.ServiceBus/namespaces/', variables('sbNamespace'))]"
                     ],
-                    "location": "[resourceGroup().location]",
+                    "location": "[parameters('siteLocation')]",
                     "properties": {
                         "Rights": [
                             "Send",
@@ -271,7 +274,7 @@
             "apiVersion": "[variables('ehVersion')]",
             "name": "[variables('eventHubNamespace')]",
             "type": "Microsoft.EventHub/namespaces",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "properties": {
                 "MessagingSku": "[variables('eventHubSku')]",
                 "MessagingSKUPlan": {
@@ -283,7 +286,7 @@
                 {
                     "apiVersion": "[variables('ehVersion')]",
                     "name": "[variables('eventHubName')]",
-                    "location": "[resourceGroup().location]",
+                    "location": "[parameters('siteLocation')]",
                     "type": "eventhubs",
                     "dependsOn": [
                         "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespace'))]"
@@ -299,7 +302,7 @@
                     "dependsOn": [
                         "[concat('Microsoft.EventHub/namespaces/', variables('eventHubNamespace'))]"
                     ],
-                    "location": "[resourceGroup().location]",
+                    "location": "[parameters('siteLocation')]",
                     "properties": {
                         "PrimaryKey": "[reference('eventhubPrimaryKey').outputs.guid.value]",
                         "SecondaryKey": "[reference('eventhubSecondaryKey').outputs.guid.value]",
@@ -316,7 +319,7 @@
             "apiVersion": "2015-06-15",
             "type": "Microsoft.Network/virtualNetworks",
             "name": "[variables('virtualNetworkName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -337,7 +340,7 @@
             "apiVersion": "2015-06-15",
             "type": "Microsoft.Network/networkInterfaces",
             "name": "[variables('nicName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "dependsOn": [
                 "[concat('Microsoft.Network/publicIPAddresses/', variables('publicIPAddressName'))]",
                 "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
@@ -363,7 +366,7 @@
             "apiVersion": "2016-03-30",
             "type": "Microsoft.Compute/virtualMachines",
             "name": "[variables('vmName')]",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "dependsOn": [
                 "[concat('Microsoft.Storage/storageAccounts/', variables('storageAccountName'))]",
                 "[concat('Microsoft.Network/networkInterfaces/', variables('nicName'))]",
@@ -437,7 +440,7 @@
         {
             "apiVersion": "2017-01-31",
             "type": "Microsoft.ContainerService/containerServices",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "name": "[variables('kubernetesName')]",
             "properties": {
                 "orchestratorProfile": {
@@ -472,7 +475,7 @@
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "name": "[concat(variables('vmName'),'/deploysite')]",
             "apiVersion": "2016-03-30",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('siteLocation')]",
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines/', variables('vmName'))]",
                 "[resourceId('Microsoft.ContainerService/containerServices/', variables('kubernetesName'))]"

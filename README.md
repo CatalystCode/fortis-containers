@@ -3,7 +3,7 @@
 # deploy fortis pipeline
 Deploy your own Fortis pipeline to an azure subscription through a single click. 
 
-[![Deploy to Azure](http://azuredeploy.net/deploybutton.svg)](https://deploy.azure.com/?repository=https://github.com/catalystcode/fortis-containers/tree/master?ptmpl=azuredeploy.parameters.json)
+[![Deploy to Azure](http://azuredeploy.net/deploybutton.svg)](https://deploy.azure.com/?repository=https://github.com/CatalystCode/project-fortis-pipeline/tree/siteLocation-AzureDeploy?ptmpl=azuredeploy.parameters.json)
 ![fortisadminoverview](https://user-images.githubusercontent.com/7635865/31245700-cd8193be-a9d0-11e7-9558-e78dd15951a2.png)
 
 
